@@ -1,0 +1,486 @@
+<html>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+<head>
+<link rel="stylesheet" href="http://yui.yahooapis.com/3.13.0/build/cssbutton/cssbutton.css">
+<link rel="stylesheet" href="http://yui.yahooapis.com/gallery-2013.03.27-22-06/build/gallerycss-cssform/gallerycss-cssform-min.css">
+<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+<script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
+<script src="//connect.facebook.net/en_US/all.js"></script>
+
+<title>Homework #8 of Xilu Ran</title>
+
+
+<style type="text/css">
+.container{
+	position:absolute;
+	width: 1200px;
+	height: 700px
+}
+.search{
+	position: absolute;
+	margin-left: 150px;
+	font-family: verdana;
+	font-weight: lighter;
+	font-size: 14px;
+	color: white
+}
+.city{
+	position: absolute;
+	margin-left: 150px;
+	margin-top: 60px;
+	font-family: verdana;
+	font-size: 50px;
+	color: white;
+	height: 100px
+}
+.state{
+	position: absolute;
+	margin-left: 150px;
+	margin-top: 130px;
+	font-family: verdana;
+	font-size: 20px;
+	color: white;
+	height: 50px
+}
+.weather{
+	margin-left: 150px;
+	margin-top: 230px;
+	width: 1000px;
+	height: 250px
+}
+.cweather_1{
+	position: absolute;
+	margin-left: 150px;
+	margin-top: 220px;
+	font-family: verdana;
+	font-size: 14px;
+	color: white;
+	width: 300px;
+	height: 100px
+}
+.cweather_2{
+	position: absolute;
+	margin-left: 150px;
+	margin-top: 320px;	
+	font-family: verdana;
+	font-size: 120px;
+	color: white;
+	width: 300px;
+	height: 150px
+}
+.unit{
+	position: absolute;
+	margin-left: 300px;
+	margin-top: 320px;	
+	font-family: verdana;
+	font-size: 50px;
+	color: white;
+}
+.units{
+	position: absolute;
+	margin-left: 330px;
+	margin-top: 320px;	
+	font-family: verdana;
+	font-size: 50px;
+	color: white;
+}
+.wforecast{
+	position: absolute;
+	margin-left: 450px;
+	margin-top: 230px;
+	font-family: verdana;
+	font-size: 15px;
+	color: white;
+	font-weight: bold;
+	width: 360px;
+	height: 250px
+}
+.facebook{
+	position: absolute;
+	margin-left: 810px;
+	margin-top: 300px;
+	font-family: verdana;
+	font-size: 14px;
+	color: white;
+	width: 440px;
+	height: 100px
+}
+.share{
+	position: absolute;
+	margin-left: 850px;
+	margin-top: 340px;
+	font-family: verdana;
+	font-size: 14px;
+	color: white;
+	width: 440px;
+	height: 100px
+}
+.yahoo{
+	position: absolute;
+	font-family: verdana;
+	font-size: 11px;
+	color: white;
+	position: absolute;
+	margin-top: 500px;
+	margin-left: 950px
+}
+</style>
+
+
+<script type="text/javascript">
+function getWeather(info) { 
+	var obj = document.form1.location;
+	//alert(obj.value);
+	var digit0 = /^[0-9]{1,4}$/;
+	var digit1 = /^[0-9]{6,}$/;
+	var digit2 = /^[0-9]{5}$/;
+	var letter1 = /,[a-zA-Z]+/; 
+	var letter2 = /,\s[a-zA-Z]+/;
+	var tempUnit = "f";
+	
+	if(obj.value.trim()=="")
+	{
+		alert("Please input city or zip code");
+		obj.focus();
+		return false;
+	}
+	else if(digit0.test(obj.value)||digit1.test(obj.value))
+	{
+		alert("Invalid zipcode: must be five digits\nExample: 90089");
+	}	
+	else
+	{
+		//ZIP CODE	
+		if(digit2.test(obj.value))
+		{
+			//document.write("location:"+obj.value+"</br>"+"type:zip</br>tempUnit:f");
+			var url = "/examples/weathersearch?location="+obj.value+"&type=zip&tempUnit="+tempUnit;
+			//var url = "/examples/SelectCityServlet";
+			//document.write(url);
+			if(window.ActiveXObject) 
+			{   		
+				xmlHttpRequest = new ActionXObject("Microsoft.XMLHTTP");
+			}
+			else if(window.XMLHttpRequest) 
+			{		
+				xmlHttpRequest = new XMLHttpRequest();
+			}
+		
+			if(xmlHttpRequest != null) 
+			{
+				xmlHttpRequest.open("GET", url, true);			
+				xmlHttpRequest.onreadystatechange = ajaxCall;			
+				xmlHttpRequest.send();
+			}	
+		}
+
+			
+		//CITY
+		//else if(!(letter1.test(obj.value)||letter2.test(obj.value)))
+		else if(!(letter1.test(obj.value.replace(/\s+/g,""))))
+		{
+			alert("Invalid location: must include state or country separated by comma\nExample: Los Angeles, CA");
+		}
+		else
+		{
+			/*var buf = obj.value.split(",");
+			var city = buf[0];
+			var state = buf[1];
+			document.write("location:"+city+"</br>"+state+"</br>"+"type:city</br>tempUnit:f");*/
+			
+			
+			var text = obj.value;
+			var text = text.replace(/\s+/g,"");
+			//var text = text.trim();
+			//alert(text);
+			var url = "/examples/weathersearch?location="+text+"&type=city&tempUnit="+tempUnit;
+			//document.write(url);
+			if(window.ActiveXObject) 
+			{   		
+				xmlHttpRequest = new ActionXObject("Microsoft.XMLHTTP");
+			}
+			else if(window.XMLHttpRequest) 
+			{		
+				xmlHttpRequest = new XMLHttpRequest();
+			}
+		
+			if(xmlHttpRequest != null) 
+			{
+				xmlHttpRequest.open("GET", url, true);			
+				xmlHttpRequest.onreadystatechange = ajaxCall;	
+				xmlHttpRequest.setRequestHeader("Connection","Close");
+				xmlHttpRequest.setRequestHeader("Method","GET"+url+"HTTP/1.1");		
+				xmlHttpRequest.send();
+			}
+		}
+		
+	}
+}
+ 
+function ajaxCall() {
+	//alert(xmlHttpRequest.status);
+	if(xmlHttpRequest.readyState == 4 ) {  		
+		if(xmlHttpRequest.status == 200) {		
+			var text = xmlHttpRequest.responseText;
+			//var text = text.replace(/'/g,"\"");
+			var dataObj=eval("("+text+")");
+			//var testJson = "{ 'name': '小强', 'age': '16' }";            
+            //testJson = eval("(" + testJson + ")");
+            //var test= "{'weather':{'city':'Los Angeles','regioncountry':'CA.United States'}}";
+            //test = eval("(" + test + ")");
+			if(dataObj.weather.tempUnit == "F")
+			unit="F";
+			else unit= "C";
+			
+			document.getElementById("city").innerHTML = dataObj.weather.city;
+			document.getElementById("state").innerHTML = dataObj.weather.regioncountry;
+			
+			var current = "<img src='"+dataObj.weather.imagesrc+"'>"+"&nbsp&nbsp"+dataObj.weather.text+"</br></br>"+"↑"+dataObj.weather.higha+unit+"&nbsp&nbsp&nbsp&nbsp&nbsp"+"↓"+dataObj.weather.lowa+unit;
+			document.getElementById("weather_1").innerHTML = current;
+			
+			document.getElementById("weather_2").innerHTML = dataObj.weather.temp;
+			
+			document.getElementById("unit").innerHTML = "°";			
+			document.getElementById("units").innerHTML = "<u>"+unit+"</u>";
+			
+			document.getElementById("facebook").innerHTML='<input type="radio" id="CWeather" name="post" value="1">Post Current Weather</input></br><input type="radio" id="WForecast" name="post" value="2">Post Weather Forecast</input></br>';
+			document.getElementById("share").innerHTML = "<img src='facebook.jpg' style='width:85px;height:26px'  >";
+						
+			document.getElementById("yahoo").innerHTML = "View Full Details on<a href='"+dataObj.weather.link+"'><img src='yahoo.gif'></a>";
+			
+			document.getElementById("forecast").innerHTML = "Forecast</br></br>";
+
+YUI().use("datatable", function (Y) {
+
+    // A table from data with keys that work fine as column names
+    var simple = new Y.DataTable({
+        columns: ["Day", "Weather", "High","Low"],
+        data   : [
+            {Day:dataObj.weather.daya, Weather:dataObj.weather.texta, High:dataObj.weather.higha+"°"+unit, Low:dataObj.weather.lowa+"°"+unit,},
+				{Day:dataObj.weather.dayb, Weather:dataObj.weather.textb, High:dataObj.weather.highb+"°"+unit, Low:dataObj.weather.lowb+"°"+unit,},
+				{Day:dataObj.weather.dayc, Weather:dataObj.weather.textc, High:dataObj.weather.highc+"°"+unit, Low:dataObj.weather.lowc+"°"+unit,},
+				{Day:dataObj.weather.dayd, Weather:dataObj.weather.textd, High:dataObj.weather.highd+"°"+unit, Low:dataObj.weather.lowd+"°"+unit,},
+				{Day:dataObj.weather.daye, Weather:dataObj.weather.texte, High:dataObj.weather.highe+"°"+unit, Low:dataObj.weather.lowe+"°"+unit,}
+        ],
+        summary: "Price sheet for inventory parts",
+        //caption: "Example table with simple columns"
+    });
+    
+    simple.render("#forecast");
+
+});
+			
+		}
+	}
+}
+
+function change() { 
+	
+	//alert(unit);
+	if(unit == "F")
+	{
+		cUnit = "c";		
+		unit = "C";
+		changeWeather(cUnit);
+	}
+	else
+	{
+		cUnit = "f";
+		unit = "F";
+		changeWeather(cUnit);
+	}	
+		 
+}
+
+function changeWeather(info) {
+	var obj =document.form1.location;
+	//alert(a.value);
+	var digit0 = /^[0-9]{1,4}$/;
+	var digit1 = /^[0-9]{6,}$/;
+	var digit2 = /^[0-9]{5}$/;
+	var letter1 = /,[a-zA-Z]+/; 
+	var letter2 = /,\s[a-zA-Z]+/;
+	if(digit2.test(obj.value))
+		{
+			//document.write("location:"+obj.value+"</br>"+"type:zip</br>tempUnit:f");
+			var url = "/examples/weathersearch?location="+obj.value+"&type=zip&tempUnit="+info;
+			//var url = "/examples/SelectCityServlet";
+			//document.write(url);
+			if(window.ActiveXObject) 
+			{   		
+				xmlHttpRequest = new ActionXObject("Microsoft.XMLHTTP");
+			}
+			else if(window.XMLHttpRequest) 
+			{		
+				xmlHttpRequest = new XMLHttpRequest();
+			}
+		
+			if(xmlHttpRequest != null) 
+			{
+				xmlHttpRequest.open("GET", url, true);			
+				xmlHttpRequest.onreadystatechange = ajaxCall;			
+				xmlHttpRequest.send();
+			}	
+		}
+
+			
+		//CITY
+		//else if(!(letter1.test(obj.value)||letter2.test(obj.value)))
+		else if(!(letter1.test(obj.value.replace(/\s+/g,""))))
+		{
+			alert("Invalid location: must include state or country separated by comma\nExample: Los Angeles, CA");
+		}
+		else
+		{
+			/*var buf = obj.value.split(",");
+			var city = buf[0];
+			var state = buf[1];
+			document.write("location:"+city+"</br>"+state+"</br>"+"type:city</br>tempUnit:f");*/
+			
+			
+			var text = obj.value;
+			var text = text.replace(/\s+/g,"");
+			//var text = text.trim();
+			//alert(text);
+			var url = "/examples/weathersearch?location="+text+"&type=city&tempUnit="+info;
+			//document.write(url);
+			if(window.ActiveXObject) 
+			{   		
+				xmlHttpRequest = new ActionXObject("Microsoft.XMLHTTP");
+			}
+			else if(window.XMLHttpRequest) 
+			{		
+				xmlHttpRequest = new XMLHttpRequest();
+			}
+		
+			if(xmlHttpRequest != null) 
+			{
+				xmlHttpRequest.open("GET", url, true);			
+				xmlHttpRequest.onreadystatechange = ajaxCall;	
+				xmlHttpRequest.setRequestHeader("Connection","Close");
+				xmlHttpRequest.setRequestHeader("Method","GET"+url+"HTTP/1.1");		
+				xmlHttpRequest.send();
+			}
+		}
+	
+}	
+
+function Pop() { 
+	var v = document.getElementsByName("post");
+	for (var i=0;i<v.length;i++)
+	{
+		if(v.item(i).checked)
+		{
+			var check = v.item(i).value;
+			alert(check);
+		}
+	}
+	
+	
+}
+
+
+</script>
+
+
+<script type="text/javascript">
+
+window.fbAsyncInit = function() {
+    // init the FB JS SDK
+    FB.init({
+      appId      : '176607699203655',                        // App ID from the app dashboard
+      channelUrl : 'http://http://cs-server.usc.edu:28205/examples/weather.html', // Channel file for x-domain comms
+      status     : true,                                 // Check Facebook Login status
+      xfbml      : true                                  // Look for social plugins on the page
+    });
+
+    // Additional initialization code such as adding Event Listeners goes here
+  }; 
+function Test() { 
+//            FB.api('/me', function (response) { 
+//                alert('Your name is ' + response.name); 
+            //            }); 
+            FB.login(function (response) { 
+                if (response.authResponse) { 
+                    alert('Welcome!  Fetching your information.... '); 
+                    FB.api('/me', function (response) { 
+                        alert('Good to see you, ' + response.name + '.'); 
+                    }); 
+                } else { 
+                    alert('User cancelled login or did not fully authorize.'); 
+                } 
+            }, { scope: 'email,user_location,offline_access,publish_stream' }); 
+        } 
+        
+function PostTest() { 
+            var picurl = "http://102.mlsimages.movoto.com/064/12048664_0.jpg"; 
+            var body = 'Test!'; 
+            FB.api('/me/feed', 'post', { message: body, picture:picurl }, function (response) { 
+                debugger; www.2cto.com
+                if (!response || response.error) { 
+                    alert('Error occured'); 
+                } else { 
+                    alert('Post ID: ' + response.id); 
+                } 
+            }); 
+        }              
+
+
+
+</script>
+
+
+</head>
+
+<body background="bg.jpg" style="background-repeat:no-repeat" class="yui3-skin-sam">
+
+<div class="container">
+<div class="search" id="search">
+
+<form name="form1" class="yui3-form" method="get">
+
+Location:&nbsp&nbsp
+<input class="yui3-form" type="text" name="location" placeholder="Enter city or zip code" size="50" style="font-family:arial"/>
+&nbsp&nbsp
+<input type="button" value="Search" onclick="getWeather(this.form)" style="width:70px"/>
+
+</form>
+
+</div>
+<div class="city" id="city">
+
+</div>
+<div class="state" id="state">
+<div id="div1"></div>
+</div>
+<div>
+<div class="cweather_1" id="weather_1">
+</br></br>
+
+</div>
+
+<div class="cweather_2" id="weather_2"></div>
+
+<div class="unit" id="unit"></div>
+<div class="units" id="units" onclick="change()"></div>
+
+<div class="example yui3-skin-sam">
+<div class="wforecast" id="forecast"></div>
+</div>
+
+<div class="facebook" id="facebook"></div>
+<div class="share" id="share" onclick="Pop()"></div>
+
+</div>
+
+<div class="yahoo" id="yahoo">
+
+</div>
+
+</div>
+
+
+</body>
+
+
+</html>
